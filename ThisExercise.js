@@ -38,9 +38,9 @@ var deepJS = {
   printRecords(recordIds) {
     var records = recordIds.map(this.getStudentFromId.bind(this));
 
-    records.sort(this.sortByNameAsc.bind(this));
+    records.sort(this.sortByNameAsc);
 
-    records.forEach(this.printRecord.bind(this));
+    records.forEach(this.printRecord);
   },
 
   sortByNameAsc(record1, record2) {
@@ -60,7 +60,7 @@ var deepJS = {
       this.needToEnroll.bind(this)
     );
 
-    var idsToEnroll = recordsToEnroll.map(this.getStudentId.bind(this));
+    var idsToEnroll = recordsToEnroll.map(this.getStudentId);
 
     return [...this.currentEnrollment, ...idsToEnroll];
   },
