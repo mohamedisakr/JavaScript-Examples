@@ -1,5 +1,17 @@
 var workshop = {
   teacher: "mariam",
+  ask(question) {
+    console.log(this.teacher, question);
+  }
+};
+
+setTimeout(workshop.ask, 10, "Lost this?");
+
+setTimeout(workshop.ask.bind(workshop), 10, "Hard bound this?");
+
+/*
+var workshop = {
+  teacher: "mariam",
   ask: question => {
     console.log(this.teacher, question);
   }
@@ -8,7 +20,7 @@ var workshop = {
 workshop.ask("What happened to 'this' ?");
 
 workshop.ask.call(workshop, "Still no 'this' ?");
-
+*/
 /*
 var workshop = {
   teacher: "mariam",

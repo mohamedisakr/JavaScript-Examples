@@ -2,31 +2,32 @@ const deepJS = {
   currentEnrollment: [],
   studentRecords: [],
 
-  addStudent: function(id, name, paid) {
+  addStudent: (id, name, paid) => {
     this.studentRecords.push({ id, name, paid });
   },
 
-  enrollStudent: function(id) {
+  enrollStudent: id => {
     if (!this.currentEnrollment.includes(id)) {
       this.currentEnrollment.push(id);
     }
   },
 
-  printCurrentEnrollment: function() {
+  printCurrentEnrollment: () => {
     this.printRecords(this.currentEnrollment);
   },
 
-  enrollPaidStudents: function() {
-    this.currentEnrollment = paidStudentsToEnroll();
+  enrollPaidStudents: () => {
+    this.currentEnrollment = this.paidStudentsToEnroll();
     this.printCurrentEnrollment();
   },
 
-  remindUnpaidStudents: function() {
+  remindUnpaidStudents: () => {
     this.remindUnpaid(this.currentEnrollment);
   },
 
-  getStudentFromId: function(studentId) {
-    console.log(this);
+  getStudentFromId: studentId => {
+    console.log(this === globalThis ? "this is global" : "this is NOT global"); // still global this
+
     return this.studentRecords.find(matchId);
 
     // *************************
@@ -36,76 +37,78 @@ const deepJS = {
     }
   },
 
-  printRecords: function(recordIds) {
-    var records = recordIds.map(this.getStudentFromId);
+  printRecords(recordIds) {
+    var records = recordIds.map(this.getStudentFromId.bind(this));
 
-    records.sort(this.sortByNameAsc);
+    records.sort(this.sortByNameAsc.bind(this));
 
-    records.forEach(this.printRecord);
+    records.forEach(this.printRecord.bind(this));
   },
 
-  sortByNameAsc: function(record1, record2) {
+  sortByNameAsc: (record1, record2) => {
     if (record1.name < record2.name) return -1;
     else if (record1.name > record2.name) return 1;
     else return 0;
   },
 
-  printRecord: function(record) {
+  printRecord: record => {
     console.log(
       `${record.name} (${record.id}): ${record.paid ? "Paid" : "Not Paid"}`
     );
   },
 
-  paidStudentsToEnroll: function() {
-    var recordsToEnroll = this.studentRecords.filter(needToEnroll);
+  paidStudentsToEnroll() {
+    var recordsToEnroll = this.studentRecords.filter(
+      this.needToEnroll.bind(this)
+    );
 
-    var idsToEnroll = recordsToEnroll.map(getStudentId);
+    var idsToEnroll = recordsToEnroll.map(this.getStudentId.bind(this));
 
     return [...currentEnrollment, ...idsToEnroll];
   },
 
-  needToEnroll: function(record) {
+  needToEnroll(record) {
     return record.paid && !this.currentEnrollment.includes(record.id);
   },
 
-  getStudentId: function(record) {
+  getStudentId(record) {
     return record.id;
   },
 
-  remindUnpaid: function(recordIds) {
-    var unpaidIds = recordIds.filter(notYetPaid);
+  remindUnpaid(recordIds) {
+    var unpaidIds = recordIds.filter(this.notYetPaid.bind(this));
 
     printRecords(unpaidIds);
   },
 
-  notYetPaid: function(studentId) {
-    var record = getStudentFromId(studentId);
+  notYetPaid(studentId) {
+    var record = this.getStudentFromId.bind(this, studentId);
     return !record.paid;
   }
 };
 
 // var deepJS = defineWorkshop();
 
-deepJS.addStudent(311, "Frank", /*paid=*/ true);
-deepJS.addStudent(410, "Suzy", /*paid=*/ true);
-deepJS.addStudent(709, "Brian", /*paid=*/ false);
-deepJS.addStudent(105, "Henry", /*paid=*/ false);
-deepJS.addStudent(502, "Mary", /*paid=*/ true);
-deepJS.addStudent(664, "Bob", /*paid=*/ false);
-deepJS.addStudent(250, "Peter", /*paid=*/ true);
-deepJS.addStudent(375, "Sarah", /*paid=*/ true);
-deepJS.addStudent(867, "Greg", /*paid=*/ false);
+deepJS.addStudent.bind(deepJS, (311, "Frank", /*paid=*/ true));
+deepJS.addStudent.bind(deepJS, (410, "Suzy", /*paid=*/ true));
+deepJS.addStudent.bind(deepJS, (709, "Brian", /*paid=*/ false));
+deepJS.addStudent.bind(deepJS, (105, "Henry", /*paid=*/ false));
+deepJS.addStudent.bind(deepJS, (502, "Mary", /*paid=*/ true));
+deepJS.addStudent.bind(deepJS, (664, "Bob", /*paid=*/ false));
+deepJS.addStudent.bind(deepJS, (250, "Peter", /*paid=*/ true));
+deepJS.addStudent.bind(deepJS, (375, "Sarah", /*paid=*/ true));
+deepJS.addStudent.bind(deepJS, (867, "Greg", /*paid=*/ false));
 
-deepJS.enrollStudent(410);
-deepJS.enrollStudent(105);
-deepJS.enrollStudent(664);
-deepJS.enrollStudent(375);
+deepJS.enrollStudent.bind(deepJS, 410);
+deepJS.enrollStudent.bind(deepJS, 105);
+deepJS.enrollStudent.bind(deepJS, 664);
+deepJS.enrollStudent.bind(deepJS, 375);
 
-deepJS.printCurrentEnrollment();
+deepJS.printCurrentEnrollment.bind(deepJS);
 console.log("----");
-deepJS.enrollPaidStudents();
+deepJS.enrollPaidStudents.bind(deepJS);
 console.log("----");
-deepJS.remindUnpaidStudents();
+deepJS.remindUnpaidStudents.bind(deepJS);
 
 /*
 	Bob (664): Not Paid
